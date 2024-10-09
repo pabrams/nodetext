@@ -1,5 +1,6 @@
-// Import the readline module for user input
+// Import the readline module for user input and chalk for colored text
 const readline = require('readline');
+const chalk = require('chalk');  // Importing chalk for colored output
 
 // Create an interface to handle input and output
 const rl = readline.createInterface({
@@ -25,11 +26,11 @@ let gameState = {
 // Function to display the main menu
 function showMainMenu() {
     console.clear();
-    console.log('\n=== Main Menu ===');
-    console.log('1. Start Game');
-    console.log('2. View Inventory');
-    console.log('3. Exit');
-    console.log('Use number keys to select an option.');
+    console.log(chalk.green('\n=== Main Menu ==='));
+    console.log(chalk.cyan('1. Start Game'));
+    console.log(chalk.cyan('2. View Inventory'));
+    console.log(chalk.cyan('3. Exit'));
+    console.log(chalk.yellow('Use number keys to select an option.'));
 
     // Wait for keypress and handle the choice
     process.stdin.once('keypress', handleMainMenu);
@@ -48,7 +49,7 @@ function handleMainMenu(str, key) {
             exitGame();
             break;
         default:
-            console.log('Invalid option, please try again.');
+            console.log(chalk.red('Invalid option, please try again.'));
             showMainMenu();
     }
 }
@@ -56,11 +57,11 @@ function handleMainMenu(str, key) {
 // Function to start the game
 function startGame() {
     console.clear();
-    console.log('\nStarting the game...');
+    console.log(chalk.blue('\nStarting the game...'));
     if (!gameState.playerName) {
-        rl.question('Enter your character name: ', name => {
+        rl.question(chalk.magenta('Enter your character name: '), name => {
             gameState.playerName = name;
-            console.log(`\nWelcome, ${gameState.playerName}! Your adventure begins...`);
+            console.log(chalk.green(`\nWelcome, ${gameState.playerName}! Your adventure begins...`));
             encounter();
         });
     } else {
@@ -71,19 +72,19 @@ function startGame() {
 // Function to simulate a game encounter
 function encounter() {
     console.clear();
-    console.log('\nYou encounter a wild creature!');
-    console.log('1. Fight');
-    console.log('2. Run');
-    console.log('Use number keys to make your choice.');
+    console.log(chalk.red('\nYou encounter a wild creature!'));
+    console.log(chalk.cyan('1. Fight'));
+    console.log(chalk.cyan('2. Run'));
+    console.log(chalk.yellow('Use number keys to make your choice.'));
 
     process.stdin.once('keypress', (str, key) => {
         if (key.name === '1') {
             fight();
         } else if (key.name === '2') {
-            console.log('You run away safely!');
-            showMainMenu();
+            console.log(chalk.green('You run away safely!'));
+            setTimeout(showMainMenu, 2000); // Return to menu after a short delay
         } else {
-            console.log('Invalid choice, try again.');
+            console.log(chalk.red('Invalid choice, try again.'));
             encounter();
         }
     });
@@ -92,17 +93,17 @@ function encounter() {
 // Function to handle fighting an enemy
 function fight() {
     console.clear();
-    console.log('\nYou engage in battle...');
+    console.log(chalk.red('\nYou engage in battle...'));
     const damage = Math.floor(Math.random() * 20);
     gameState.health -= damage;
-    console.log(`You took ${damage} damage. Your health is now ${gameState.health}.`);
+    console.log(chalk.yellow(`You took ${damage} damage. Your health is now ${gameState.health}.`));
 
     if (gameState.health > 0) {
-        console.log('You defeated the creature!');
-        gameState.inventory.push('Creature Loot');
+        console.log(chalk.green('You defeated the creature!'));
+        gameState.inventory.push(chalk.green('Creature Loot'));
         setTimeout(showMainMenu, 2000); // Return to menu after a short delay
     } else {
-        console.log('You have been defeated! Game Over.');
+        console.log(chalk.red('You have been defeated! Game Over.'));
         setTimeout(exitGame, 2000); // Exit after a short delay
     }
 }
@@ -110,12 +111,12 @@ function fight() {
 // Function to view the player's inventory
 function viewInventory() {
     console.clear();
-    console.log('\n=== Inventory ===');
+    console.log(chalk.green('\n=== Inventory ==='));
     if (gameState.inventory.length === 0) {
-        console.log('Your inventory is empty.');
+        console.log(chalk.red('Your inventory is empty.'));
     } else {
         gameState.inventory.forEach((item, index) => {
-            console.log(`${index + 1}. ${item}`);
+            console.log(chalk.cyan(`${index + 1}. ${item}`));
         });
     }
     setTimeout(showMainMenu, 2000); // Return to menu after a short delay
@@ -123,7 +124,7 @@ function viewInventory() {
 
 // Function to exit the game
 function exitGame() {
-    console.log('Thanks for playing! Goodbye.');
+    console.log(chalk.blue('Thanks for playing! Goodbye.'));
     process.exit(); // Exit the process
 }
 
